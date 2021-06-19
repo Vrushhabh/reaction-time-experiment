@@ -1,4 +1,4 @@
-function [accuracy, results] = recorddata(trial_size,complexity)
+function [correctResults] = recorddata(trial_size,complexity)
 %REACTIONEXPERIMENT This function makes figures that either contain the
 %target or don't and the user has to quickly determine that by using the
 %'A' (contains target) and 'S' (does not contain target) keys. 
@@ -8,25 +8,49 @@ function [accuracy, results] = recorddata(trial_size,complexity)
 % subject will have to process (higher the complexity the higher the
 % reaction time
 accuracy = 0;
-results = [];
-i=0
+correctResults = [];
+wrongResults = [];
+correct = 0;
+i=0;
 while i < trial_size
-    random = rand()
+    random = rand();
     if random < .5
         plot(rand(),rand(),'o')
         hold on
-        x = rand(1,complexity)
-        y = rand(1,complexity)
+        x = rand(1,complexity);
+        y = rand(1,complexity);
         plot(x,y, 'x')
-        pause
+        tic
+        key = waitforbuttonpress;
+        input = double(get(gcf,'CurrentCharacter'));
+        if  input == 97  || input == 65
+             time = toc;
+             correct = correct + 1;
+             correctResults(end+1) = time;
+        else 
+            time = toc;
+            wrongResults(end+1) = time;
+            
+        end
+        
     else 
-        x = rand(1,complexity)
-        y = rand(1,complexity)
+        x = rand(1,complexity);
+        y = rand(1,complexity);
         plot(x,y, 'x')
-        pause
+        tic
+        waitforbuttonpress;
+        input = double(get(gcf,'CurrentCharacter'));
+        if  input ~= 97  && input ~= 65
+             time = toc;
+             correct = correct + 1;
+             correctResults(end+1) = time;
+        else 
+            time = toc;
+            wrongResults(end+1) = time;
+        end
     end
-    clf
-    i = i + 1
+    clf;
+    i = i + 1;
 end
 
 
